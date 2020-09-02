@@ -4,6 +4,8 @@ class BooksController < ApplicationController
   
   def index
     @books = Book.all
+    @books = @books.where(year: params[:year]) if params[:year].present?
+    @books = @books.where(month: params[:month]) if params[:month].present?
   end
   
   def show
@@ -11,10 +13,12 @@ class BooksController < ApplicationController
   
   def new
     @book = Book.new
+    @book.year = 2019
   end
   
   def create
     book_params = params.require(:book).permit(:year, :month, :inout, :category, :amount)
+    p params.class
     @book = Book.new(book_params)
     if @book.save
       flash[:notice] = "家計簿にデータを１件登録しました"
